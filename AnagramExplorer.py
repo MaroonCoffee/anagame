@@ -26,17 +26,15 @@ class AnagramExplorer:
         
         if word1 not in self.corpus or word2 not in self.corpus:
             return False
-        for l in word1:
-            if l not in letters:
+        
+        dict1, dict2 = {}, {}
+        for i in range(len(word1)):
+            dict1[word1[i]] = 1 + dict1.get(word1[i], 0)
+            dict2[word2[i]] = 1 + dict2.get(word2[i], 0)
+        for i in letters:
+            if i not in dict1.keys():
                 return False
-        if not tup[0]:
-            return False
-        w1 = sorted(tup[1])
-        w2 = sorted(tup[2])
-        if w1 == w2:
-            return True
-        return False
-        return True
+        return dict1==dict2
         
     def get_lookup_dict(self) -> dict:
         '''Creates a fast dictionary look-up (via prime hash or sorted tuple) of all anagrams in a word corpus.
@@ -48,7 +46,11 @@ class AnagramExplorer:
             dict: Returns a dictionary with  keys that return sorted lists of all anagrams of the key (per the corpus)
         '''
         lookup = {}
-        
+
+        for word in sorted(self.corpus): 
+            key = tuple(sorted(list(word)))
+            lookup[key] = lookup.get(key, []) + [word]
+    
         return lookup
 
     def get_all_anagrams(self, letters: list[str]) -> set:
@@ -66,14 +68,24 @@ class AnagramExplorer:
               set: all unique words in corpus which form at least 1 anagram pair
         '''
         all_anagrams = set()
-
+        for anagrams in self.get_lookup_dict(self.corpus).values():
+            if len(anagrams)>1:
+                for anagram in anagrams: 
+                    all_anagrams.add(anagram)
         return all_anagrams
 
     def get_most_anagrams(self, letters:list[str]) -> list[str]:
         '''Returns a word from the largest list of anagrams that can be formed using the given letters.'''
-        most_anagrams = []
-      
-        return most_anagrams[0]
+        max_value = 2
+        most_anagramable = []
+        for v in self.get_lookup_dict(self.corpus).values():
+            if len(v) == max_value:
+                most_anagramable.append(v)
+            elif len(v) > max_value:
+                most_anagramable = [v]
+                max_value = len(v)
+
+        return [value[0] for value in sorted(most_anagramable)]
 
 if __name__ == "__main__":
   print("Running AnagramExplorer for testing")
