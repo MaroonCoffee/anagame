@@ -10,7 +10,7 @@ class AnagramExplorer:
       return self.__corpus
 
     def is_valid_anagram_pair(self, pair:tuple[str], letters:list[str]) -> bool:
-       '''Checks whether a pair of words:
+        '''Checks whether a pair of words:
             -are both included in the allowable word list (self.corpus)
             -consist entirely of letters chosen at the beginning of the game
             -form a valid anagram pair
@@ -22,8 +22,21 @@ class AnagramExplorer:
             Returns:
                 bool: Returns True if the word pair fulfills all validation requirements, otherwise returns False
        '''
-    
-       return True
+        word1, word2 = pair[0].lower(), pair[1].lower()
+        
+        if word1 not in self.corpus or word2 not in self.corpus:
+            return False
+        for l in word1:
+            if l not in letters:
+                return False
+        if not tup[0]:
+            return False
+        w1 = sorted(tup[1])
+        w2 = sorted(tup[2])
+        if w1 == w2:
+            return True
+        return False
+        return True
         
     def get_lookup_dict(self) -> dict:
         '''Creates a fast dictionary look-up (via prime hash or sorted tuple) of all anagrams in a word corpus.
