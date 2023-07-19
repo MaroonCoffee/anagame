@@ -74,18 +74,15 @@ class AnagramExplorer:
                     all_anagrams.add(anagram)
         return all_anagrams
 
-    def get_most_anagrams(self, letters:list[str]) -> list[str]:
+    def get_most_anagrams(self, letters:list[str]) -> str:
         '''Returns a word from the largest list of anagrams that can be formed using the given letters.'''
-        max_value = 2
-        most_anagramable = []
+        max_value = 1
+        most_anagramable = ""
         for v in self.get_lookup_dict(self.corpus).values():
-            if len(v) == max_value:
-                most_anagramable.append(v)
-            elif len(v) > max_value:
-                most_anagramable = [v]
+            if len(v) > max_value:
+                most_anagramable = v[0]
                 max_value = len(v)
-
-        return [value[0] for value in sorted(most_anagramable)]
+        return most_anagramable
 
 if __name__ == "__main__":
   print("Running AnagramExplorer for testing")
