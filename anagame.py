@@ -69,7 +69,8 @@ def parse_guess(guess:str) -> tuple:
           >>>parse_guess("eat tea")
           ("", "")
    '''
-
+   guess_tuple = tuple(guess.replace(" ", "").split(","))
+   if len(guess_tuple) == 2: return guess_tuple
    return ("", "")
 
 def play_game(time_limit: int, letters: list, explorer:AnagramExplorer) -> list:
@@ -145,7 +146,18 @@ def calc_stats(guesses: list, letters: list, explorer) -> dict:
     stats = {}
     stats["valid"] = []   #list of tuples
     stats["invalid"] = [] #list of tuples
+
+    for guess in guesses:
+        if explorer.is_valid_anagram_pair(guess, letters):
+            stats["valid"].append(guess)
+        else:
+            stats["invalid"].append(guess)
+
     stats["score"] = 0    #total score per the rules of the game
+
+    for guess in stats["valid"]:
+        stats["score"] += len(guess[0]) - 2
+
     stats["accuracy"] = 0 #int percentage representing valid player guesses out of all player guesses
     stats["skill"] = 0    #int percentage representing unique guessed words out of all possible unique anagram words
     stats["guessed"] = set() #unique valid guessed words
