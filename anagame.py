@@ -144,14 +144,19 @@ def calc_stats(guesses: list, letters: list, explorer) -> dict:
      }
     '''
     stats = {}
-    all_anagrams = explorer.get_all_anagrams(letters)
+    all_anagramable_words = explorer.get_all_anagrams(letters)
     stats["valid"] = []   #list of tuples
     stats["invalid"] = [] #list of tuples
     stats["guessed"] = set()
 
+    guessed_anagramable_words = set()
+
     for guess in guesses:
         if explorer.is_valid_anagram_pair(guess, letters):
             stats["valid"].append(guess)
+            for word in guess:
+                if word not in guessed_anagramable_words:
+                    guessed_anagramable_words.append(word)
         else:
             stats["invalid"].append(guess)
         for word in guess:
@@ -165,11 +170,11 @@ def calc_stats(guesses: list, letters: list, explorer) -> dict:
 
     stats["accuracy"] = len(stats["valid"])/(len(guesses)) * 100 #int percentage representing valid player guesses out of all player guesses
 
-    stats["skill"] = len(stats["valid"])/len(all_anagrams) * 100    #int percentage representing unique guessed words out of all possible unique anagram words
+    stats["skill"] = len(guessed_anagramable_words)/len(all_anagramable_words) * 100    #int percentage representing unique guessed words out of all possible unique anagram words
 
     #unique valid guessed words
 
-    stats["not guessed"] = #unique words the player could have guessed, but didn’t
+    stats["not guessed"] = all_anagramable_words-guessed_anagramable_words #unique words the player could have guessed, but didn’t
 
     return stats
 
