@@ -76,7 +76,7 @@ class AnagramExplorer:
         for i in range(len(letters), 2, -1):
             for word in combinations(letters, i):
                 all_anagram_combinations.add(tuple(sorted(word)))
-        lookup_dict = self.get_lookup_dict()
+        lookup_dict = self.anagram_lookup
         for combination in all_anagram_combinations:
             if combination in lookup_dict.keys():
                 if len(lookup_dict[combination]) > 1:
@@ -87,10 +87,22 @@ class AnagramExplorer:
         '''Returns a word from the largest list of anagrams that can be formed using the given letters.'''
         max_value = 1
         most_anagramable = ""
-        for v in self.get_lookup_dict().values():
-            if len(v) > max_value:
-                most_anagramable = v[0]
-                max_value = len(v)
+        
+        for key, value in self.anagram_lookup.items():
+            letters_valid = True
+            remaining_letters = letters.copy()
+            
+            for i in key:
+                if i in remaining_letters:
+                    remaining_letters.remove(i)
+                else:
+                    letters_valid = False
+                    break
+            if not letters_valid: continue
+            
+            if len(value) > max_value:
+                most_anagramable = value[0]
+                max_value = len(value)
         return most_anagramable
 
 if __name__ == "__main__":
@@ -107,11 +119,8 @@ if __name__ == "__main__":
 
   my_explorer = AnagramExplorer(["abed", "mouse", "bead", "baled", "abled", "rat", "blade"])
 
-#   print(my_explorer.is_valid_anagram_pair(("rat", "tar"), letters))
-#   print(my_explorer.is_valid_anagram_pair(("stop", "pots"), letters))
-#   print(my_explorer.get_most_anagrams(letters))
-#   print(my_explorer.get_all_anagrams(letters))
-#   print(my_explorer.get_all_anagrams(letters))
-  
-  explorer_2 = AnagramExplorer(['abed', 'mouse', 'rat', 'cat', 'tiger', 'elephant', 'stork'])
-  print(explorer_2.get_all_anagrams([letters]))
+  print(my_explorer.is_valid_anagram_pair(("rat", "tar"), letters))
+  print(my_explorer.is_valid_anagram_pair(("stop", "pots"), letters))
+  print(my_explorer.get_most_anagrams(letters))
+  print(my_explorer.get_all_anagrams(letters))
+  print(my_explorer.get_all_anagrams(letters))
