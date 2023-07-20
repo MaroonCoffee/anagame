@@ -33,6 +33,11 @@ class AnagramExplorer:
         for i in dict1.keys():
             if i not in letters:
                 return False
+            else:
+                for _ in range(dict1[i]):
+                    if i not in letters:
+                        return False
+                    letters.remove(i)
         return dict1==dict2
         
     def get_lookup_dict(self) -> dict:
