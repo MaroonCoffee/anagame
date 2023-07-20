@@ -36,7 +36,6 @@ def generate_letters(fun_factor: int, distribution: str, explorer:AnagramExplore
       
        #2 check how many unique anagram words can be formed from those letters
        possible_words = explorer.get_all_anagrams(letters)
-
        #3 decide if there are enough possible words
        if len(possible_words) >= fun_factor:
            finished = True
@@ -109,7 +108,7 @@ def play_game(time_limit: int, letters: list, explorer:AnagramExplorer) -> list:
 
     return guesses
 
-def calc_stats(guesses: list, letters: list, explorer) -> dict:
+def calc_stats(guesses: list, letters: list, explorer: AnagramExplorer) -> dict:
     '''Aggregates several statistics into a single dictionary with the following key-value pairs:
         "valid" - list of valid guesses
         "invalid" - list of invalid/duplicate guesses
@@ -152,23 +151,23 @@ def calc_stats(guesses: list, letters: list, explorer) -> dict:
     guessed_anagramable_words = set()
 
     for guess in guesses:
-        if explorer.is_valid_anagram_pair(guess, letters):
-            stats["valid"].append(guess)
+        if explorer.is_valid_anagram_pair(guess, letters) and sorted(guess) not in stats["valid"]:
+            stats["valid"].append(sorted(guess))
             for word in guess:
                 if word not in guessed_anagramable_words:
-                    guessed_anagramable_words.append(word)
+                    guessed_anagramable_words.add(word)
         else:
             stats["invalid"].append(guess)
         for word in guess:
             if word not in stats["guessed"]:
-                stats["guessed"].append(word)
+                stats["guessed"].add(word)
     
     stats["score"] = 0    #total score per the rules of the game
 
     for guess in stats["valid"]:
         stats["score"] += len(guess[0]) - 2
 
-    stats["accuracy"] = len(stats["valid"])/(len(guesses)) * 100 #int percentage representing valid player guesses out of all player guesses
+    stats["accuracy"] = 0 if len(guesses) == 0 else len(stats["valid"])/(len(guesses)) * 100 #int percentage representing valid player guesses out of all player guesses
 
     stats["skill"] = len(guessed_anagramable_words)/len(all_anagramable_words) * 100    #int percentage representing unique guessed words out of all possible unique anagram words
 
@@ -200,7 +199,6 @@ def display_stats(stats):
 
 if __name__ == "__main__":
   time_limit = 60
-
   explorer = AnagramExplorer(get_valid_word_list()) #helper object
   letters = generate_letters(100, "uniform", explorer)
 

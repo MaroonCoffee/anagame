@@ -1,4 +1,5 @@
 from itertools import combinations
+from valid_word_list import get_valid_word_list
 
 class AnagramExplorer:
     def __init__(self, all_words: list[str]):
@@ -23,16 +24,14 @@ class AnagramExplorer:
                 bool: Returns True if the word pair fulfills all validation requirements, otherwise returns False
        '''
         word1, word2 = pair[0].lower(), pair[1].lower()
-        
-        if word1 not in self.corpus or word2 not in self.corpus:
+        if (word1 not in self.corpus or word2 not in self.corpus) or (word1==word2) or (len(word1)!=len(word2)):
             return False
-        
         dict1, dict2 = {}, {}
         for i in range(len(word1)):
             dict1[word1[i]] = 1 + dict1.get(word1[i], 0)
             dict2[word2[i]] = 1 + dict2.get(word2[i], 0)
-        for i in letters:
-            if i not in dict1.keys():
+        for i in dict1.keys():
+            if i not in letters:
                 return False
         return dict1==dict2
         
@@ -68,17 +67,22 @@ class AnagramExplorer:
               set: all unique words in corpus which form at least 1 anagram pair
         '''
         all_anagrams = set()
-        for anagrams in self.get_lookup_dict(self.corpus).values():
-            if len(anagrams)>1:
-                for anagram in anagrams: 
-                    all_anagrams.add(anagram)
+        all_anagram_combinations = set()
+        for i in range(len(letters), 2, -1):
+            for word in combinations(letters, i):
+                all_anagram_combinations.add(tuple(sorted(word)))
+        lookup_dict = self.get_lookup_dict()
+        for combination in all_anagram_combinations:
+            if combination in lookup_dict.keys():
+                for word in lookup_dict[combination]:
+                    all_anagrams.add(word)
         return all_anagrams
 
     def get_most_anagrams(self, letters:list[str]) -> str:
         '''Returns a word from the largest list of anagrams that can be formed using the given letters.'''
         max_value = 1
         most_anagramable = ""
-        for v in self.get_lookup_dict(self.corpus).values():
+        for v in self.get_lookup_dict().values():
             if len(v) > max_value:
                 most_anagramable = v[0]
                 max_value = len(v)
@@ -96,9 +100,10 @@ if __name__ == "__main__":
 
   letters = ["l", "o", "t", "s", "r", "i", "a"]
 
-  my_explorer = AnagramExplorer(words2)
+  my_explorer = AnagramExplorer(get_valid_word_list())
 
   print(my_explorer.is_valid_anagram_pair(("rat", "tar"), letters))
   print(my_explorer.is_valid_anagram_pair(("stop", "pots"), letters))
   print(my_explorer.get_most_anagrams(letters))
+  print(my_explorer.get_all_anagrams(letters))
   print(my_explorer.get_all_anagrams(letters))
