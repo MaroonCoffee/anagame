@@ -47,7 +47,7 @@ class AnagramExplorer:
         lookup = {}
 
         for word in sorted(self.corpus): 
-            key = tuple(sorted(list(word)))
+            key = tuple(sorted(word))
             lookup[key] = lookup.get(key, []) + [word]
     
         return lookup
@@ -100,7 +100,7 @@ if __name__ == "__main__":
 
   letters = ["l", "o", "t", "s", "r", "i", "a"]
 
-  my_explorer = AnagramExplorer(get_valid_word_list())
+  my_explorer = AnagramExplorer(["abed", "mouse", "bead", "baled", "abled", "rat", "blade"])
 
   print(my_explorer.is_valid_anagram_pair(("rat", "tar"), letters))
   print(my_explorer.is_valid_anagram_pair(("stop", "pots"), letters))
