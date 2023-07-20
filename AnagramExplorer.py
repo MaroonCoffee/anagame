@@ -79,8 +79,8 @@ class AnagramExplorer:
         lookup_dict = self.get_lookup_dict()
         for combination in all_anagram_combinations:
             if combination in lookup_dict.keys():
-                for word in lookup_dict[combination]:
-                    all_anagrams.add(word)
+                if len(lookup_dict[combination]) > 1:
+                    all_anagrams.update(lookup_dict[combination])
         return all_anagrams
 
     def get_most_anagrams(self, letters:list[str]) -> str:
@@ -107,8 +107,11 @@ if __name__ == "__main__":
 
   my_explorer = AnagramExplorer(["abed", "mouse", "bead", "baled", "abled", "rat", "blade"])
 
-  print(my_explorer.is_valid_anagram_pair(("rat", "tar"), letters))
-  print(my_explorer.is_valid_anagram_pair(("stop", "pots"), letters))
-  print(my_explorer.get_most_anagrams(letters))
-  print(my_explorer.get_all_anagrams(letters))
-  print(my_explorer.get_all_anagrams(letters))
+#   print(my_explorer.is_valid_anagram_pair(("rat", "tar"), letters))
+#   print(my_explorer.is_valid_anagram_pair(("stop", "pots"), letters))
+#   print(my_explorer.get_most_anagrams(letters))
+#   print(my_explorer.get_all_anagrams(letters))
+#   print(my_explorer.get_all_anagrams(letters))
+  
+  explorer_2 = AnagramExplorer(['abed', 'mouse', 'rat', 'cat', 'tiger', 'elephant', 'stork'])
+  print(explorer_2.get_all_anagrams([letters]))
