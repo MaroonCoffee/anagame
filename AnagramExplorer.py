@@ -117,10 +117,9 @@ if __name__ == "__main__":
 
   letters = ["l", "o", "t", "s", "r", "i", "a"]
 
-  my_explorer = AnagramExplorer(["abed", "mouse", "bead", "baled", "abled", "rat", "blade"])
+  my_explorer = AnagramExplorer(get_valid_word_list())
 
   print(my_explorer.is_valid_anagram_pair(("rat", "tar"), letters))
   print(my_explorer.is_valid_anagram_pair(("stop", "pots"), letters))
   print(my_explorer.get_most_anagrams(letters))
-  print(my_explorer.get_all_anagrams(letters))
   print(my_explorer.get_all_anagrams(letters))

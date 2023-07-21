@@ -143,37 +143,32 @@ def calc_stats(guesses: list, letters: list, explorer: AnagramExplorer) -> dict:
      }
     '''
     stats = {}
-    all_anagramable_words = explorer.get_all_anagrams(letters)
     stats["valid"] = []   #list of tuples
     stats["invalid"] = [] #list of tuples
-    stats["guessed"] = set()
-
-    guessed_anagramable_words = set()
-
+    stats["score"] = 0    #total score per the rules of the game
+    stats["accuracy"] = 0 #int percentage representing valid player guesses out of all player guesses
+    stats["skill"] = 0    #int percentage representing unique guessed words out of all possible unique anagram words
+    stats["guessed"] = set() #unique valid guessed words
+    stats["not guessed"] = set() #unique words the player could have guessed, but didn’t
+    
     for guess in guesses:
-        if explorer.is_valid_anagram_pair(guess, letters) and sorted(guess) not in stats["valid"]:
+        if explorer.is_valid_anagram_pair(guess, letters.copy()) and (sorted(guess) not in stats["valid"]):
             stats["valid"].append(sorted(guess))
             for word in guess:
-                if word not in guessed_anagramable_words:
-                    guessed_anagramable_words.add(word)
+                stats["guessed"].add(word)
         else:
             stats["invalid"].append(guess)
-        for word in guess:
-            if word not in stats["guessed"]:
-                stats["guessed"].add(word)
     
-    stats["score"] = 0    #total score per the rules of the game
-
     for guess in stats["valid"]:
-        stats["score"] += len(guess[0]) - 2
+        stats["score"] += len(guess[0])-2
+    
+    total_guesses = len(stats["valid"]) + len(stats["invalid"])
+    stats["accuracy"] = 0 if total_guesses == 0 else int(100 * len(stats["valid"]) / total_guesses)
 
-    stats["accuracy"] = 0 if len(guesses) == 0 else len(stats["valid"])/(len(guesses)) * 100 #int percentage representing valid player guesses out of all player guesses
+    total_anagrams = explorer.get_all_anagrams(letters)
+    stats["skill"] = 0 if len(total_anagrams) == 0 else int(100 * len(stats["guessed"]) / len(total_anagrams))
 
-    stats["skill"] = len(guessed_anagramable_words)/len(all_anagramable_words) * 100    #int percentage representing unique guessed words out of all possible unique anagram words
-
-    #unique valid guessed words
-
-    stats["not guessed"] = all_anagramable_words-guessed_anagramable_words #unique words the player could have guessed, but didn’t
+    stats["not guessed"] = total_anagrams - stats["guessed"]
 
     return stats
 
