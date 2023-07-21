@@ -32,7 +32,18 @@ def generate_letters(fun_factor: int, distribution: str, explorer:AnagramExplore
            for i in range(7):
                 letters.append(chr(random.randint(97, 122)))
        elif distribution == "scrabble":
-           raise ValueError("Scrabble distribution not yet implemented!")
+            scrabble_distribution_map = {'a': 9, 'b': 2, 'c': 2, 'd': 4, 'e': 12, 'f': 2,
+            'g': 3, 'h': 2, 'i': 9, 'j': 1, 'k': 1, 'l': 4, 'm': 2, 'n': 6,
+            'o': 8, 'p': 2, 'q': 1, 'r': 6, 's': 4, 't': 6, 'u': 4, 'v': 2,
+            'w': 2, 'x': 1, 'y': 2, 'z': 1 }
+
+            scrabble_tile_pool = []
+            for key, value in scrabble_distribution_map.items():
+                for _ in range(value):
+                    scrabble_tile_pool.append(key)
+
+            for i in range(7):
+                letters.append(scrabble_tile_pool.pop(random.randint(0, len(scrabble_tile_pool)-1)))
       
        #2 check how many unique anagram words can be formed from those letters
        possible_words = explorer.get_all_anagrams(letters)
@@ -195,7 +206,7 @@ def display_stats(stats):
 if __name__ == "__main__":
   time_limit = 60
   explorer = AnagramExplorer(get_valid_word_list()) #helper object
-  letters = generate_letters(100, "uniform", explorer)
+  letters = generate_letters(100, "scrabble", explorer)
 
   print("\nWelcome to Anagame!\n")
   print("Please enter your anagrams separated by a comma: eat,tea")
